@@ -1,6 +1,6 @@
 {
 	"name": "duplexer3",
-	"version": "0.1.5",
+	"version": "1.0.0",
 	"description": "Modern version of `duplexer2`",
 	"license": "BSD-3-Clause",
 	"repository": "sindresorhus/duplexer3",
