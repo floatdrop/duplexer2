@@ -1,9 +1,9 @@
 {
 	"name": "duplexer3",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"description": "Like duplexer but using streams3",
 	"engine": {
-			"node": ">=4"
+		"node": ">=4"
 	},
 	"files": [
 		"index.js"
