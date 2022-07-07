@@ -1,49 +1,47 @@
 #!/usr/bin/env node
+import stream from 'node:stream';
+import duplexer from './index.js';
 
-var stream = require("stream");
+const writable = new stream.Writable({objectMode: true});
+const readable = new stream.Readable({objectMode: true});
 
-var duplexer3 = require("./");
+writable._write = function (input, encoding, done) {
+	if (readable.push(input)) {
+		return done();
+	}
 
-var writable = new stream.Writable({objectMode: true}),
-    readable = new stream.Readable({objectMode: true});
-
-writable._write = function _write(input, encoding, done) {
-  if (readable.push(input)) {
-    return done();
-  } else {
-    readable.once("drain", done);
-  }
+	readable.once('drain', done);
 };
 
-readable._read = function _read(n) {
-  // no-op
+readable._read = function () {
+	// Noop
 };
 
-// simulate the readable thing closing after a bit
-writable.once("finish", function() {
-  setTimeout(function() {
-    readable.push(null);
-  }, 500);
+// Simulate the readable thing closing after a bit
+writable.once('finish', () => {
+	setTimeout(() => {
+		readable.push(null);
+	}, 500);
 });
 
-var duplex = duplexer3(writable, readable);
+const duplex = duplexer(writable, readable);
 
-duplex.on("data", function(e) {
-  console.log("got data", JSON.stringify(e));
+duplex.on('data', data => {
+	console.log('got data', JSON.stringify(data));
 });
 
-duplex.on("finish", function() {
-  console.log("got finish event");
+duplex.on('finish', () => {
+	console.log('got finish event');
 });
 
-duplex.on("end", function() {
-  console.log("got end event");
+duplex.on('end', () => {
+	console.log('got end event');
 });
 
-duplex.write("oh, hi there", function() {
-  console.log("finished writing");
+duplex.write('oh, hi there', () => {
+	console.log('finished writing');
 });
 
-duplex.end(function() {
-  console.log("finished ending");
+duplex.end(() => {
+	console.log('finished ending');
 });
